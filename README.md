@@ -9,7 +9,7 @@ storage and admin authentication integration.
 - Vite
 - Tailwind CSS 4
 - React Router
-- Appwrite Account, Databases and Storage
+- Appwrite Account, TablesDB and Storage
 - Vercel-compatible SPA routing
 
 ## Local development

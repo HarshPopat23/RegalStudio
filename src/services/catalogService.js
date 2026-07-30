@@ -1,15 +1,15 @@
 import { ID, Query } from "appwrite";
-import { databases } from "../lib/appwrite";
+import { tablesDB } from "../lib/appwrite";
 import { appwriteConfig, validateAppwriteConfig } from "../config/appwriteConfig";
 import { deleteImage, getImageUrl, uploadImage } from "./imageService";
 
-const categoryCollection = () => ({
+const categoryTable = () => ({
   databaseId: appwriteConfig.databaseId,
-  collectionId: appwriteConfig.categoriesCollectionId,
+  tableId: appwriteConfig.categoriesCollectionId,
 });
-const productCollection = () => ({
+const productTable = () => ({
   databaseId: appwriteConfig.databaseId,
-  collectionId: appwriteConfig.productsCollectionId,
+  tableId: appwriteConfig.productsCollectionId,
 });
 
 const clean = (document) => {
@@ -38,20 +38,20 @@ const mapProduct = (document) => ({
 
 export async function getCategories() {
   validateAppwriteConfig();
-  const response = await databases.listDocuments({
-    ...categoryCollection(),
+  const response = await tablesDB.listRows({
+    ...categoryTable(),
     queries: [Query.limit(100)],
   });
-  return response.documents.map(mapCategory).sort((a, b) => a.displayOrder - b.displayOrder);
+  return response.rows.map(mapCategory).sort((a, b) => a.displayOrder - b.displayOrder);
 }
 
 export async function getProducts() {
   validateAppwriteConfig();
-  const response = await databases.listDocuments({
-    ...productCollection(),
+  const response = await tablesDB.listRows({
+    ...productTable(),
     queries: [Query.limit(100)],
   });
-  return response.documents.map(mapProduct).sort(
+  return response.rows.map(mapProduct).sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
   );
 }
@@ -59,9 +59,9 @@ export async function getProducts() {
 export async function createCategory(data) {
   const uploaded = await uploadImage(data.coverFile);
   try {
-    const document = await databases.createDocument({
-      ...categoryCollection(),
-      documentId: ID.unique(),
+    const document = await tablesDB.createRow({
+      ...categoryTable(),
+      rowId: ID.unique(),
       data: {
         name: data.name,
         slug: data.slug,
@@ -84,9 +84,9 @@ export async function updateCategory(data) {
   let uploaded = null;
   if (data.coverFile) uploaded = await uploadImage(data.coverFile);
   try {
-    const document = await databases.updateDocument({
-      ...categoryCollection(),
-      documentId: data.id,
+    const document = await tablesDB.updateRow({
+      ...categoryTable(),
+      rowId: data.id,
       data: {
         name: data.name,
         slug: data.slug,
@@ -109,16 +109,16 @@ export async function updateCategory(data) {
 export async function deleteCategory(category, products) {
   const related = products.filter((product) => product.categoryId === category.id);
   for (const product of related) await deleteProduct(product);
-  await databases.deleteDocument({ ...categoryCollection(), documentId: category.id });
+  await tablesDB.deleteRow({ ...categoryTable(), rowId: category.id });
   await deleteImage(category.coverImageId).catch(() => {});
 }
 
 export async function createProduct(data) {
   const uploaded = await uploadImage(data.imageFile);
   try {
-    const document = await databases.createDocument({
-      ...productCollection(),
-      documentId: ID.unique(),
+    const document = await tablesDB.createRow({
+      ...productTable(),
+      rowId: ID.unique(),
       data: {
         categoryId: data.categoryId,
         name: data.name,
@@ -146,9 +146,9 @@ export async function updateProduct(data) {
   let uploaded = null;
   if (data.imageFile) uploaded = await uploadImage(data.imageFile);
   try {
-    const document = await databases.updateDocument({
-      ...productCollection(),
-      documentId: data.id,
+    const document = await tablesDB.updateRow({
+      ...productTable(),
+      rowId: data.id,
       data: {
         categoryId: data.categoryId,
         name: data.name,
@@ -174,6 +174,6 @@ export async function updateProduct(data) {
 }
 
 export async function deleteProduct(product) {
-  await databases.deleteDocument({ ...productCollection(), documentId: product.id });
+  await tablesDB.deleteRow({ ...productTable(), rowId: product.id });
   await deleteImage(product.imageId).catch(() => {});
 }

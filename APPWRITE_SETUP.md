@@ -24,9 +24,9 @@ user ID. Signing in with another valid Appwrite user will not grant dashboard ac
 
 Create one database and copy its ID into `VITE_APPWRITE_DATABASE_ID`.
 
-### Categories collection
+### Categories table
 
-Create a collection and copy its ID into
+Create a table and copy its ID into
 `VITE_APPWRITE_CATEGORIES_COLLECTION_ID`.
 
 Create these attributes:
@@ -44,9 +44,9 @@ Create these attributes:
 
 Create a **unique** key index for `slug`.
 
-### Products collection
+### Products table
 
-Create a collection and copy its ID into
+Create a table and copy its ID into
 `VITE_APPWRITE_PRODUCTS_COLLECTION_ID`.
 
 Create these attributes:
@@ -75,9 +75,9 @@ Create:
 
 ## 4. Collection permissions
 
-For both collections:
+For both tables:
 
-- Disable **Document Security**.
+- Disable **Row Security**.
 - Grant **Read** to `Any`.
 - Grant **Create**, **Update** and **Delete** to the specific administrator
   `User` selected by user ID.
