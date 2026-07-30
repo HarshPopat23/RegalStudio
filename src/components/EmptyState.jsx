@@ -1,0 +1,1 @@
+export default function EmptyState({title="Nothing here yet",copy="Please check back soon."}){return <div className="col-span-full rounded-3xl border border-dashed border-[#d9c3a3] bg-white/50 p-12 text-center"><div className="text-4xl">✦</div><h3 className="mt-3 text-2xl text-[#641c2e]">{title}</h3><p className="mt-2 text-[#806a5c]">{copy}</p></div>}
